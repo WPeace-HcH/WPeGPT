@@ -22,7 +22,7 @@ ChatGPT 的分析结果**仅供参考**，不然我们这些分析师就当场�
 |2.1|2023-03-07|修复 OpenAI-API 的 timed out 问题。（详见节***关于 OpenAI-API 报错***）|
 |2.3|2023-04-23|添加 **Auto-WPeGPT v0.1**，支持对二进制文件的自动分析功能。<br>（从此版本需要添加包 *anytree*，使用 *requirements.txt* 或 *pip install anytree*）|
 |2.4|2023-11-10|1. 修改了一些显示细节。<br>2. 更新 **Auto-WPeGPT v0.2**。|
-|2.5|2024-08-07|1. 添加了对其他模型的支持。@tpsnt<br> - 通过修改 *MODEL* 变量，可以支持其他模型<br> - 设置环境变量 *OPENAI_API_BASE* 为 "https://dashscope.aliyuncs.com/compatible-mode/v1" ，将 *MODEL* 设置为 qwen-max、qwen-long、qwen-plus 等，可以使用灵积API<br> - 将插件进行复制并修改 *PLUGIN_NAME*，可以允许多个模型同时存在<br>2. 修改代码适配最新的 python openai 包。（需要使用pip更新你的openai包）|
+|2.5|2024-08-07|1. 添加了对其他模型的支持。@tpsnt<br> - 通过修改 *MODEL* 变量，可以支持其他模型<br> - 设置环境变量 *OPENAI_API_BASE* (openai 1.0.0以上版本为OPENAI_BASE_URL) 为 "https://dashscope.aliyuncs.com/compatible-mode/v1" ，将 *MODEL* 设置为 qwen-max、qwen-long、qwen-plus 等，可以使用灵积API<br> - 将插件进行复制并修改 *PLUGIN_NAME*，可以允许多个模型同时存在<br>2. 修改代码适配最新的 python openai 包。（需要使用pip更新你的openai包）|
 ## 安装
 1. 运行如下命令安装所需包。
 ```

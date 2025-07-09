@@ -9,6 +9,8 @@ import threading
 import json
 import httpx
 import sys, os
+from google import genai
+
 # Windows
 path = os.path.dirname(os.path.abspath(__file__)) + "\\Auto-WPeGPT_WPeace\\"
 # MacOS
@@ -22,6 +24,8 @@ ZH_CN = True
 PLUGIN_NAME = 'WPeChat-GPT'
 # Use DeepSeek
 #PLUGIN_NAME = 'WPeChat-DeepSeek'
+# Use gemini
+# PLUGIN_NAME = 'WPeChat-Gemini'
 
 # Set your API key here, or put in in the model_api_key environment variable.
 model_api_key = "ENTER_API_KEY_HERE"
@@ -41,9 +45,16 @@ elif PLUGIN_NAME == "WPeChat-DeepSeek":
     PROD_NAME = 'DeepSeek'
     MODEL = 'deepseek-chat'
     print("WPeChatGPT is using DeepSeek.")
+elif PLUGIN_NAME == "WPeChat-Gemini":
+    PROD_NAME = 'Gemini'
+    # MODEL = 'gemini-2.5-pro'
+    MODEL = 'gemini-2.5-flash'
+    print("WPeChatGPT is using Gemini.")
 # Create openai client (python openai package version > 1.2)
 if PROD_NAME == "DeepSeek":
     client = openai.OpenAI(base_url="https://api.deepseek.com", api_key=model_api_key)
+elif PROD_NAME == "Gemini":
+    client = genai.Client(api_key=model_api_key)
 elif proxy:
     client = openai.OpenAI(http_client=httpx.Client(proxies=proxy, transport=httpx.HTTPTransport(local_address="0.0.0.0")), api_key=model_api_key)
     print("WPeChatGPT has appointed the forward-proxy.")
@@ -296,13 +307,32 @@ def query_model(query, cb, max_tokens=2500):
     :param cb: Tu function to which the response will be passed to.
     """
     try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "user", "content": query}
+        if PROD_NAME == "Gemini":
+            # 构建带有 role 信息的消息
+            messages = [
+                {"role": "user", "parts": [{"text": query}]}
             ]
-        )
-        ida_kernwin.execute_sync(functools.partial(cb, response=response.choices[0].message.content), ida_kernwin.MFF_WRITE)
+            response = client.models.generate_content(
+                model=MODEL,
+                contents=messages,
+            )
+            # 处理 Gemini 的响应格式
+            ida_kernwin.execute_sync(
+                functools.partial(cb, response=response.text), 
+                ida_kernwin.MFF_WRITE
+            )
+        else:
+            # OpenAI 格式保持不变
+            response = client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {"role": "user", "content": query}
+                ]
+            )
+            ida_kernwin.execute_sync(
+                functools.partial(cb, response=response.choices[0].message.content), 
+                ida_kernwin.MFF_WRITE
+            )
     except openai.BadRequestError as e:
         # Context length exceeded. Determine the max number of tokens we can ask for and retry.
         m = re.search(r'maximum context length is (\d+) tokens, however you requested \d+ tokens \((\d+) in your '

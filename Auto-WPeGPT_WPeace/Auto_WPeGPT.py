@@ -69,7 +69,7 @@ def getEffectiveStrings(fileDir):
                 if 0 < len(string) < 50:
                     strList.append(string)
     filename = fileDir + "effectiveStrings.txt"
-    with open(filename, 'w') as fp:
+    with open(filename, 'w', encoding='utf-8') as fp:
         for line in strList:
             print(line, file=fp)
     print("EffectiveStrings results are output to the file...")
@@ -114,11 +114,11 @@ def createRecursionTree(data, fileDir):
                     if nodes[value] in root.children:
                         root.children.remove(nodes[value])
         funcTree_filename = fileDir + "funcTree.txt"
-        with open(funcTree_filename, 'w') as fp:
+        with open(funcTree_filename, 'w', encoding='utf-8') as fp:
             for pre, fill, node in RenderTree(root):
                 print("%s%s" % (pre, node.name), file=fp)
         mainFuncTree_filename = fileDir + "mainFuncTree.txt"
-        with open(mainFuncTree_filename, 'w') as fp:
+        with open(mainFuncTree_filename, 'w', encoding='utf-8') as fp:
             pass
         # 尝试遍历找寻main函数或WinMain
         mainFuncName = "main"   #默认main函数为主函数
@@ -150,11 +150,11 @@ def createAnyTree(data, fileDir):
                 child_node = Node(value, parent=parent_node)
                 nodes[value] = child_node
     funcTree_filename = fileDir + "funcTree.txt"
-    with open(funcTree_filename, 'w') as fp:
+    with open(funcTree_filename, 'w', encoding='utf-8') as fp:
         for pre, fill, node in RenderTree(root):
             print("%s%s" % (pre, node.name), file=fp)
     mainFuncTree_filename = fileDir + "mainFuncTree.txt"
-    with open(mainFuncTree_filename, 'w') as fp:
+    with open(mainFuncTree_filename, 'w', encoding='utf-8') as fp:
         pass
     # 尝试遍历找寻main函数或WinMain
     mainFuncName = "main"   #默认main函数为主函数
